@@ -3,7 +3,7 @@
 Plugin Name: CodeStyling Localization
 Plugin URI: http://www.code-styling.de/english/development/wordpress-plugin-codestyling-localization-en
 Description: You can manage and edit all gettext translation files (*.po/*.mo) directly out of your WordPress Admin Center without any need of an external editor. It automatically detects the gettext ready components like <b>WordPress</b> itself or any <b>Plugin</b> / <b>Theme</b> supporting gettext, is able to scan the related source files and can assists you using <b>Google Translate API</b> or <b>Microsoft Translator API</b> during translation.This plugin supports <b>WordPress MU</b> and allows explicit <b>WPMU Plugin</b> translation too. It newly introduces ignore-case and regular expression search during translation. <b>BuddyPress</b> and <b>bbPress</b> as part of BuddyPress can be translated too. Produces transalation files are 100% compatible to <b>PoEdit</b>.
-Version: 1.99.30
+Version: 1.99.33
 Author: Heiko Rabe
 Author URI: http://www.code-styling.de/english/
 Text Domain: codestyling-localization
@@ -93,7 +93,7 @@ if (function_exists('add_action')) {
 	if ( !defined('WP_LANG_DIR') )
 		define('WP_LANG_DIR', WP_CONTENT_DIR . '/languages');
 		
-	//WPMU definitions
+	// WPMU definitions
 	if ( !defined('WPMU_PLUGIN_DIR') )
 		define( 'WPMU_PLUGIN_DIR', WP_CONTENT_DIR . '/mu-plugins' ); // full path, no trailing slash
 	if ( !defined('WPMU_PLUGIN_URL') )
@@ -106,31 +106,26 @@ if (function_exists('add_action')) {
     define('CSP_PO_TEXTDOMAIN', 'codestyling-localization');
     define('CSP_PO_BASE_URL', plugins_url(CSP_PO_PLUGINPATH));
 		
-	//Bugfix: ensure valid JSON requests at IDN locations!
-	//Attention: Google Chrome and Safari behave in different way (shared WebKit issue or all other are wrong?)!
+	// Bugfix: ensure valid JSON requests at IDN locations!
+	// Attention: Google Chrome and Safari behave in different way (shared WebKit issue or all other are wrong?)!
 	list($csp_domain, $csp_target) = csp_split_url( ( function_exists("admin_url") ? rtrim(admin_url(), '/') : rtrim(get_site_url().'/wp-admin/', '/') ) );
 	define('CSP_SELF_DOMAIN', $csp_domain);
-	if ( isset($_SERVER['HTTP_USER_AGENT']) && 
-		stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') !== false 
-		|| 
-		stripos($_SERVER['HTTP_USER_AGENT'], 'safari') !== false
-		||
-		version_compare(phpversion(), '5.2.1', '<') //IDNA class requires PHP 5.2.1 or higher
+	
+	if ( ( isset($_SERVER['HTTP_USER_AGENT']) && stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') !== false ) || ( isset($_SERVER['HTTP_USER_AGENT']) && stripos($_SERVER['HTTP_USER_AGENT'], 'safari') !== false ) || version_compare(phpversion(), '5.2.1', '<' ) // IDNA class requires PHP 5.2.1 or higher
 	) {
 		define('CSP_PO_ADMIN_URL', strtolower($csp_domain).$csp_target);
-	}
-	else{
+	} else {
 		if (!class_exists('idna_convert'))
 			require_once('includes/idna_convert.class.php');
 		$idn = new idna_convert();
 		define('CSP_PO_ADMIN_URL', $idn->decode(strtolower($csp_domain), 'utf8').$csp_target);
 	}
-	
+
     define('CSP_PO_BASE_PATH', WP_PLUGIN_DIR . CSP_PO_PLUGINPATH);
-	
+
 	define('CSP_PO_MIN_REQUIRED_WP_VERSION', '2.5');
 	define('CSP_PO_MIN_REQUIRED_PHP_VERSION', '4.4.2');
-		
+
 	register_activation_hook(__FILE__, 'csp_po_install_plugin');
 
 	add_action('plugins_loaded', 'csp_trace_php_errors', 0);
@@ -1820,7 +1815,7 @@ function csp_po_ajax_handle_launch_editor() {
 		header('Status: 404 Not Found');
 		header('HTTP/1.1 404 Not Found');
 		_e("Your translation file doesn't support the <em>multiple textdomains in one translation file</em> extension.<br/>Please re-scan the related source files at the overview page to enable this feature.",CSP_PO_TEXTDOMAIN);
-		?>&nbsp;<a align="left" class="question-help" href="javascript:void(0);" title="<?php _e("What does that mean?",CSP_PO_TEXTDOMAIN) ?>" rel="translationformat"><img src="<?php echo CSP_PO_BASE_URL."/images/question.gif"; ?>" /></a><?php
+		?>&nbsp;<a align="left" class="question-help" href="javascript:void(0);" title="<?php _e("What does that mean?",CSP_PO_TEXTDOMAIN) ?>" rel="translationformat"><img src="<?php echo CSP_PO_BASE_URL."/images/question.gif" ?>" /></a><?php
 	}
 	exit();
 }
@@ -3304,7 +3299,7 @@ define('MICROSOFT_TRANSLATE_CLIENT_SECRET', 'enter your secret here');
 					<a rel="<?php echo implode('|', array_keys($data['languages']));?>" class="clickable mofile button" onclick="csp_add_language(this,'<?php echo $data['type']; ?>','<?php echo rawurlencode($data['name'])." v".$data['version']."','mo-list-".$mo_list_counter."','".$data['base_path']."','".$data['base_file']."',this.rel,'".$data['type']."','".$data['simple-filename']."','".$data['translation_template']."','".$data['textdomain']['identifier']."',".($data['deny_scanning'] ? '1' : '0') ?>);"><?php _e("Add New Language", CSP_PO_TEXTDOMAIN); ?></a>
 					<?php if (isset($data['theme-self']) && ($data['theme-self'] != $data['theme-template'])) : ?>
 					&nbsp;<a class="clickable mofile button" onclick="csp_merge_maintheme_languages(this,'<?php echo $data['theme-template']; ?>','<?php echo $data['theme-self']; ?>','<?php echo $data['base_path']; if(!empty($data['special_path'])) echo $data['special_path'].'/' ?>','<?php echo $data['textdomain']['identifier']; ?>','mo-list-<?php echo $mo_list_counter; ?>');"><?php _e("Sync Files with Main Theme", CSP_PO_TEXTDOMAIN); ?></a>
-					<a rel="workonchildthemes" title="<?php _e("What does that mean?",CSP_PO_TEXTDOMAIN) ?>" href="javascript:void(0);" class="question-help" align="left"><img src="http://wp34.de/wp-content/plugins/codestyling-localization/images/question.gif"></a>
+					<a rel="workonchildthemes" title="<?php _e("What does that mean?",CSP_PO_TEXTDOMAIN) ?>" href="javascript:void(0);" class="question-help" align="left"><img src="<?php echo CSP_PO_BASE_URL."/images/question.gif" ?>"></a>
 					<?php endif; ?>
 				</td>
 				<td colspan="1" nowrap="nowrap" class="csp-ta-right"><?php echo sprintf(_n('<strong>%d</strong> Language', '<strong>%d</strong> Languages',count($data['languages']),CSP_PO_TEXTDOMAIN), count($data['languages'])); ?></td>

@@ -110,7 +110,7 @@ if (function_exists('add_action')) {
 	//Attention: Google Chrome and Safari behave in different way (shared WebKit issue or all other are wrong?)!
 	list($csp_domain, $csp_target) = csp_split_url( ( function_exists("admin_url") ? rtrim(admin_url(), '/') : rtrim(get_site_url().'/wp-admin/', '/') ) );
 	define('CSP_SELF_DOMAIN', $csp_domain);
-	if (
+	if ( isset($_SERVER['HTTP_USER_AGENT']) && 
 		stripos($_SERVER['HTTP_USER_AGENT'], 'chrome') !== false 
 		|| 
 		stripos($_SERVER['HTTP_USER_AGENT'], 'safari') !== false
@@ -3304,7 +3304,7 @@ define('MICROSOFT_TRANSLATE_CLIENT_SECRET', 'enter your secret here');
 					<a rel="<?php echo implode('|', array_keys($data['languages']));?>" class="clickable mofile button" onclick="csp_add_language(this,'<?php echo $data['type']; ?>','<?php echo rawurlencode($data['name'])." v".$data['version']."','mo-list-".$mo_list_counter."','".$data['base_path']."','".$data['base_file']."',this.rel,'".$data['type']."','".$data['simple-filename']."','".$data['translation_template']."','".$data['textdomain']['identifier']."',".($data['deny_scanning'] ? '1' : '0') ?>);"><?php _e("Add New Language", CSP_PO_TEXTDOMAIN); ?></a>
 					<?php if (isset($data['theme-self']) && ($data['theme-self'] != $data['theme-template'])) : ?>
 					&nbsp;<a class="clickable mofile button" onclick="csp_merge_maintheme_languages(this,'<?php echo $data['theme-template']; ?>','<?php echo $data['theme-self']; ?>','<?php echo $data['base_path']; if(!empty($data['special_path'])) echo $data['special_path'].'/' ?>','<?php echo $data['textdomain']['identifier']; ?>','mo-list-<?php echo $mo_list_counter; ?>');"><?php _e("Sync Files with Main Theme", CSP_PO_TEXTDOMAIN); ?></a>
-					<a rel="workonchildthemes" title="<?php _e("What does that mean?",CSP_PO_TEXTDOMAIN) ?>" href="javascript:void(0);" class="question-help" align="left"><img src="<?php echo CSP_PO_BASE_URL ?>/images/question.gif" /></a>
+					<a rel="workonchildthemes" title="<?php _e("What does that mean?",CSP_PO_TEXTDOMAIN) ?>" href="javascript:void(0);" class="question-help" align="left"><img src="http://wp34.de/wp-content/plugins/codestyling-localization/images/question.gif"></a>
 					<?php endif; ?>
 				</td>
 				<td colspan="1" nowrap="nowrap" class="csp-ta-right"><?php echo sprintf(_n('<strong>%d</strong> Language', '<strong>%d</strong> Languages',count($data['languages']),CSP_PO_TEXTDOMAIN), count($data['languages'])); ?></td>

@@ -275,7 +275,8 @@ if (!function_exists('scandir')) {
 	}
 }
 
-function has_subdirs($base='') {
+function has_subdirs($base) {
+    if( isset($base) && $base ) {} else { $base = ''; }
   if (!is_dir($base) || !is_readable($base)) return $false;
   $array = array_diff(scandir($base), array('.', '..'));
   foreach($array as $value) : 
@@ -284,7 +285,9 @@ function has_subdirs($base='') {
   return false;
 }
 
-function lscandir($base='', $reg='', &$data) {
+function lscandir($base, $reg, &$data) {
+    if( isset($base) && $base ) {} else { $base = ''; }
+    if( isset($reg) && $reg ) {} else { $reg = ''; }
   if (!is_dir($base) || !is_readable($base)) return $data;
   $array = array_diff(scandir($base), array('.', '..')); 
   foreach($array as $value) : 
@@ -295,7 +298,9 @@ function lscandir($base='', $reg='', &$data) {
   return $data; 
 }
 
-function rscandir($base='', $reg='', &$data) {
+function rscandir($base, $reg, &$data) {
+    if( isset($base) && $base ) {} else { $base = ''; }
+    if( isset($reg) && $reg ) {} else { $reg = ''; }
   if (!is_dir($base) || !is_readable($base)) return $data;
   $array = array_diff(scandir($base), array('.', '..')); 
   foreach($array as $value) : 
@@ -308,7 +313,8 @@ function rscandir($base='', $reg='', &$data) {
   return $data; 
 }		
 
-function rscanpath($base='', &$data) {
+function rscanpath($base, &$data) {
+    if( isset($base) && $base ) {} else { $base = ''; }
   if (!is_dir($base) || !is_readable($base)) return $data;
   $array = array_diff(scandir($base), array('.', '..')); 
   foreach($array as $value) : 
@@ -321,7 +327,8 @@ function rscanpath($base='', &$data) {
 }		
 
 
-function rscandir_php($base='', &$exclude_dirs, &$data) {
+function rscandir_php($base, &$exclude_dirs, &$data) {
+    if( isset($base) && $base ) {} else { $base = ''; }
   if (!is_dir($base) || !is_readable($base)) return $data;
   $array = array_diff(scandir($base), array('.', '..')); 
   foreach($array as $value) : 

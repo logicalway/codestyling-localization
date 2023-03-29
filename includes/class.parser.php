@@ -116,7 +116,7 @@ class csp_l10n_parser {
 					}
 				} elseif (T_CONSTANT_ENCAPSED_STRING == $id) {
 					if ($in_func && $args_started) {
-						if ($text{0} == '"') {
+						if ($text[0] == '"') {
 							$text = substr($text, 1, strlen($text)-2);
 							$text = str_replace('\"', '"', $text);
 							$text = str_replace("\\$", "$", $text);

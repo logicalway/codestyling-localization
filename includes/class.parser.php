@@ -116,7 +116,7 @@ class csp_l10n_parser {
 					}
 				} elseif (T_CONSTANT_ENCAPSED_STRING == $id) {
 					if ($in_func && $args_started) {
-						if ($text[0] == '"') {
+						if ( isset($text[0]) && $text[0] == '"') {
 							$text = substr($text, 1, strlen($text)-2);
 							$text = str_replace('\"', '"', $text);
 							$text = str_replace("\\$", "$", $text);
@@ -141,7 +141,7 @@ class csp_l10n_parser {
 						
 						if ($cur_argc == 0) $cur_match_line = $line_number;
 					}elseif($in_not_gettext) {
-						if ($text{0} == '"') {
+						if ( isset($text[0]) && $text[0] == '"' ) {
 							$text = trim($text, '"');
 							$text = str_replace('\"', '"', $text);
 						}
@@ -159,7 +159,7 @@ class csp_l10n_parser {
 						$token = $text;
 					}
 				} elseif ((T_ML_COMMENT == $id || T_COMMENT == $id) && preg_match('|/\*\s*(/?WP_I18N_[a-z_]+)\s*\*/|i', $text, $matches)) {
-					$in_not_gettext = $matches[1]{0} == 'W';
+					$in_not_gettext = $matches[1][0] == 'W';
 					if ($in_not_gettext) $cur_not_gettext = 'Not gettexted string '.$matches[1];
 					$token = $text;
 				} elseif ((T_ML_COMMENT == $id || T_COMMENT == $id) && preg_match('/\*\s(translators:.*)\*/i', $text, $matches)) {
